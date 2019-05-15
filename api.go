@@ -273,18 +273,29 @@ type Panel struct {
 	SteppedLine     bool             `json:"steppedLine,omitempty"`
 	TimeFrom        interface{}      `json:"timeFrom,omitempty"`
 	TimeShift       interface{}      `json:"timeShift,omitempty"`
+	XAxis           Axis             `json:"xaxis,omitempty"`
+	YAxes           []Axis           `json:"yaxes,omitempty"`
+}
+
+type Axis struct {
+	Mode    string `json:"mode,omitempty"`
+	Format  string `json:"format,omitempty"`
+	LogBase int    `json:"logBase,omitempty"`
+	Show    bool   `json:"show,omitempty"`
 }
 
 // A Target specify the metrics used by the Panel
 type Target struct {
-	Alias       string    `json:"alias"`
-	Hide        bool      `json:"hide"`
-	Measurement string    `json:"measurement"`
-	GroupBy     []GroupBy `json:"groupBy"`
-	Select      []Selects `json:"select,omitempty"`
-	Tags        []Tag     `json:"tags"`
-	DsType      string    `json:"dsType,omitempty"`
-	Transform   string    `json:"transform,omitempty" toml:"transform,omitempty"`
+	Alias        string    `json:"alias"`
+	Hide         bool      `json:"hide"`
+	Measurement  string    `json:"measurement"`
+	GroupBy      []GroupBy `json:"groupBy"`
+	Select       []Selects `json:"select,omitempty"`
+	Tags         []Tag     `json:"tags"`
+	DsType       string    `json:"dsType,omitempty"`
+	Transform    string    `json:"transform,omitempty" toml:"transform,omitempty"`
+	Expr         string    `json:"expr"`
+	LegendFormat string    `json:"legendFormat"`
 }
 
 // Selects array of Select struct
@@ -574,6 +585,11 @@ func (db *Dashboard) AddRow(row Row) {
 // SetTimeFrame setup the dashboard timeframe.
 func (db *Dashboard) SetTimeFrame(from time.Time, to time.Time) {
 	db.GTime = GTime{From: from.Format(time.RFC3339), To: to.Format(time.RFC3339)}
+}
+
+// SetTimeFrame setup the dashboard timeframe.
+func (db *Dashboard) SetTimeFrameString(from string, to string) {
+	db.GTime = GTime{From: from, To: to}
 }
 
 // AddPanel add a panel to an existing row.
